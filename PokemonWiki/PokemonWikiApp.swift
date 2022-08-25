@@ -13,7 +13,7 @@ struct PokemonWikiApp: App {
     var body: some Scene {
         WindowGroup {
             ZStack {
-                ContentView()
+                PokemonListView()
                     .onAppear( perform:  {
                         DispatchQueue.main.asyncAfter(deadline: .now() + 3, execute: {
                             withAnimation {
