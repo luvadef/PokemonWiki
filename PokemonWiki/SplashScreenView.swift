@@ -25,6 +25,7 @@ struct SplashScreenView: View {
             Spacer()
             LottieView(fileName: "digglet").frame(width: 350, height: 250, alignment: .bottom)
         }
+        .background(Color.white)
     }
 }
 
