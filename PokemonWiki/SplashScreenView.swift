@@ -25,12 +25,8 @@ struct SplashScreenView: View {
             Spacer()
             LottieView(fileName: "digglet").frame(width: 350, height: 250, alignment: .bottom)
         }
-        .background(Color.white)
-    }
-}
-
-struct SplashScreenView_Previews: PreviewProvider {
-    static var previews: some View {
-        SplashScreenView()
+        .frame(maxWidth: .infinity)
+        .background(UIColor(named: "Orange")?.toColor().edgesIgnoringSafeArea(.top))
+        .background(UIColor(named: "Orange")?.toColor().edgesIgnoringSafeArea(.bottom))
     }
 }
