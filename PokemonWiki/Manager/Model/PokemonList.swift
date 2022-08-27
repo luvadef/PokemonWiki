@@ -11,7 +11,7 @@ import Foundation
 struct PokemonList: Codable {
     let count: Int
     let next: String
-    let previous: Tools.JSONNull?
+    let previous: String?
     let results: [Result]
 }
 

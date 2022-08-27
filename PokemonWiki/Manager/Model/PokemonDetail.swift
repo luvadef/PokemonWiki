@@ -22,8 +22,8 @@ struct PokemonDetail: Codable {
     let name: String
     let order: Int
     let pastTypes: [JSONAny]
-    let species: Species
-    let sprites: Sprites
+    let species: Species?
+    let sprites: Sprites?
     let stats: [Stat]
     let types: [TypeElement]
     let weight: Int
@@ -142,14 +142,14 @@ struct Versions: Codable {
 
 // MARK: - Sprites
 class Sprites: Codable {
-    let backDefault: String
-    let backFemale: Tools.JSONNull??
-    let backShiny: String
-    let backShinyFemale: Tools.JSONNull??
-    let frontDefault: String
-    let frontFemale: Tools.JSONNull??
-    let frontShiny: String
-    let frontShinyFemale: Tools.JSONNull??
+    let backDefault: String?
+    let backFemale: String?
+    let backShiny: String?
+    let backShinyFemale: String?
+    let frontDefault: String?
+    let frontFemale: String?
+    let frontShiny: String?
+    let frontShinyFemale: String?
     let other: Other?
     let versions: Versions?
     let animated: Sprites?
@@ -166,7 +166,7 @@ class Sprites: Codable {
         case other, versions, animated
     }
 
-    init(backDefault: String, backFemale: Tools.JSONNull??, backShiny: String, backShinyFemale: Tools.JSONNull??, frontDefault: String, frontFemale: Tools.JSONNull??, frontShiny: String, frontShinyFemale: Tools.JSONNull??, other: Other?, versions: Versions?, animated: Sprites?) {
+    init(backDefault: String, backFemale: String, backShiny: String, backShinyFemale: String, frontDefault: String, frontFemale: String, frontShiny: String, frontShinyFemale: String, other: Other?, versions: Versions?, animated: Sprites?) {
         self.backDefault = backDefault
         self.backFemale = backFemale
         self.backShiny = backShiny
@@ -267,10 +267,10 @@ struct Emerald: Codable {
 
 // MARK: - Home
 struct Home: Codable {
-    let frontDefault: String
-    let frontFemale: Tools.JSONNull??
-    let frontShiny: String
-    let frontShinyFemale: Tools.JSONNull??
+    let frontDefault: String?
+    let frontFemale: String?
+    let frontShiny: String?
+    let frontShinyFemale: String?
 
     enum CodingKeys: String, CodingKey {
         case frontDefault = "front_default"
@@ -293,8 +293,8 @@ struct GenerationVii: Codable {
 
 // MARK: - DreamWorld
 struct DreamWorld: Codable {
-    let frontDefault: String
-    let frontFemale: Tools.JSONNull??
+    let frontDefault: String?
+    let frontFemale: String?
 
     enum CodingKeys: String, CodingKey {
         case frontDefault = "front_default"

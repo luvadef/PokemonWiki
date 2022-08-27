@@ -13,8 +13,10 @@ struct ListCellView: View {
     var body: some View {
         HStack {
             Text("\(number)")
+                .font(Font.custom(FontsManager.PokemonGB.regular, size: 18))
             Spacer()
             Text(name)
+                .font(.custom(FontsManager.PokemonGB.regular, size: 18))
             Spacer()
         }
     }
