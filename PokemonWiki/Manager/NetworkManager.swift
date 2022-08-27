@@ -8,14 +8,7 @@
 import Foundation
 
 struct NetworkManager {
-    enum Search {
-        case pokemonList
-        case singlePokemon
-    }
-    enum NetworkError: Error {
-        case invalidUrl
-        case invalidData
-    }
+
 
     private func createRequest(for url: String) -> URLRequest? {
         guard let url = URL(string: url) else { return nil }
@@ -28,13 +21,20 @@ struct NetworkManager {
     private func executeRequest<T: Codable>(request: URLRequest, completion: ((T?, Error?) -> Void)?) {
         let session = URLSession(configuration: .default)
         let dataTask = session.dataTask(with: request) { (data, response, error) in
-            guard let data = data else {
-                completion?(nil, error)
-                return
+            if let httResponse = response as? HTTPURLResponse {
+                if !httResponse.isResponseOK() {
+                    completion?(nil, NetworkError.apiError)
+                }
             }
-            if let decodedResponse = try? JSONDecoder().decode(T.self, from: data) {
-                DispatchQueue.main.async {
-                    completion?(decodedResponse, nil)
+            let decoder = JSONDecoder()
+            if let data = data {
+                do {
+                    let decodedResponse = try decoder.decode(T.self, from: data)
+                    DispatchQueue.main.async {
+                        completion?(decodedResponse, nil)
+                    }
+                } catch {
+                    print("DECODER ERROR: \(error)")
                 }
             } else {
                 completion?(nil, NetworkError.invalidData)
@@ -66,4 +66,21 @@ struct NetworkManager {
         }
         executeRequest(request: request, completion: completion)
     }
+}
+
+extension HTTPURLResponse {
+     func isResponseOK() -> Bool {
+         return (200...299).contains(self.statusCode)
+     }
+}
+
+enum Search {
+    case pokemonList
+    case singlePokemon
+}
+
+enum NetworkError: Error {
+    case invalidUrl
+    case invalidData
+    case apiError
 }

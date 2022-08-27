@@ -8,9 +8,14 @@
 import Foundation
 
 // MARK: - PokemonItem
-struct PokemonItem: Identifiable {
+struct PokemonItem: Identifiable, Codable {
     let id = UUID()
     let name: String
     let number: String
     let url: String
+
+    func getSearchNumber() -> String {
+        let arrayURL = url.split(separator: "/")
+        return String(arrayURL[arrayURL.count - 1])
+    }
 }

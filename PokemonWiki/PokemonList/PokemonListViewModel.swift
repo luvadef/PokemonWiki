@@ -11,28 +11,27 @@ import Foundation
 class PokemonListViewModel {
     var dataSource = PokemonListDataSource()
     @Published var pokemonItemList: [PokemonItem] = []
-
-    init(){
+    @Published var pokemonItemDetail: PokemonItemDetail = PokemonItemDetail.getEmptyPokemon()
+    
+    init() {
         getPokemonList(limit: 20, offset: 0)
     }
 
     func getPokemonList(limit: Int, offset: Int) {
-        dataSource.callListPokemon(limit: limit, offset: offset, onCompletion: { list in
+        dataSource.callListPokemon(limit: limit, offset: offset, onCompletion: { (list, error) in
+            guard let list = list else {
+                return
+            }
             self.pokemonItemList = list
         })
     }
 
-    func callFetchPokemon(name: String) {
-        print("calling network...")
-        NetworkManager().fetchPokemon(name: name) { [weak self] (pokemon, error) in
-            guard self != nil else { return }
-            if let pokemon = pokemon {
-                print("~~~~~~~~~~~~~~~~~~~~~~~~")
-                print("POKEMON: \(pokemon)")
-                print("~~~~~~~~~~~~~~~~~~~~~~~~")
-            } else {
-                print("No pokemon found!!")
+    func getPokemon(_ name: String) {
+        dataSource.callFetchPokemon(name: name, onCompletion: { (pokemon, error) in
+            guard let pokemon = pokemon else {
+                return
             }
-        }
+            self.pokemonItemDetail = pokemon
+        })
     }
 }
