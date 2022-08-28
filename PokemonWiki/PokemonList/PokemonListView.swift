@@ -23,7 +23,11 @@ struct PokemonListView: View {
                     VStack {
                         List {
                             ForEach(pokemonItemList) { pokemon in
-                                NavigationLink (destination: PokemonDetailView(pokemonName: pokemon.getSearchNumber())
+                                NavigationLink (
+                                    destination: PokemonDetailView(
+                                        pokemonName: pokemon.getSearchNumber(),
+                                        pokemonURL: pokemon.url
+                                    )
                                 ) {
                                     ListCellView(number: pokemon.number, name: pokemon.name)
                                         .padding(EdgeInsets(top: 10, leading: 0, bottom: 0, trailing: 0))
@@ -44,14 +48,23 @@ struct PokemonListView: View {
                                 }
                             }
                             .padding()
+                            .font(Font.custom(FontsManager.PokemonGB.regular, size: 10))
                             .foregroundColor(.white)
                             .disabled(offset == 0 ? true : false)
                             Rectangle()
-                                .frame(maxHeight: 10)
+                                .frame(maxWidth: 30, maxHeight: 10)
                                 .foregroundColor(.clear)
+                            NavigationLink (destination: FavoriteView())
+                            {
+                                Image("Favorite")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 50, height: 50, alignment: .center)
+                            }
+                            .frame(height: 75)
                             Divider().frame(maxHeight: 20)
                             Rectangle()
-                                .frame(maxHeight: 10)
+                                .frame(maxWidth: 30, maxHeight: 10)
                                 .foregroundColor(.clear)
                             Button("Next") {
                                 showLoadder.toggle()
@@ -62,6 +75,7 @@ struct PokemonListView: View {
                                 }
                             }
                             .padding()
+                            .font(Font.custom(FontsManager.PokemonGB.regular, size: 10))
                             .foregroundColor(.white)
                         }
 

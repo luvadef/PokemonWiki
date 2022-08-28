@@ -10,7 +10,7 @@ import Foundation
 import SwiftUI
 
 class PokemonDetailViewModel {
-    var dataSource = PokemonListDataSource()
+    var dataSource = PokemonDetailDataSource()
     @Published var pokemonItemDetail: PokemonItemDetail = PokemonItemDetail.getEmptyPokemon()
     @Published var pokemonAbilityDetail: PokemonAbilityDetail = PokemonAbilityDetail.getEmptyAbilityDetail()
     @Published var showNetworkError: Bool = false
