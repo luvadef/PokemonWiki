@@ -25,14 +25,4 @@ class PokemonListViewModel {
             self.pokemonItemList = list
         })
     }
-
-    func getPokemon(_ name: String) {
-        dataSource.callFetchPokemon(name: name, onCompletion: { (pokemon, error) in
-            guard let pokemon = pokemon else {
-                return
-            }
-            self.pokemonItemDetail = pokemon
-            print(self.pokemonItemDetail)
-        })
-    }
 }

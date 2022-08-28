@@ -9,7 +9,9 @@ import SwiftUI
 
 struct PokemonDetailView: View {
     var pokemonName: String
+    var pokemonURL: String
     var viewModel = PokemonDetailViewModel()
+    var favoriteViewModel = FavoriteViewModel()
     @Environment(\.dismiss) private var dismiss
     @Environment(\.presentationMode) private var presentationMode
     @State private var pokemonItemDetail: PokemonItemDetail = PokemonItemDetail.getEmptyPokemon()
@@ -151,6 +153,11 @@ struct PokemonDetailView: View {
                 Toggle("Favorite", isOn: $isFavorite)
                     .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10))
                     .onTapGesture {
+                        favoriteViewModel.setFavorite(
+                            name: pokemonItemDetail.name,
+                            number: pokemonName,
+                            url: pokemonURL
+                        )
                         if !isFavorite {
                             showFavorite.toggle()
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
@@ -253,6 +260,9 @@ struct PokemonDetailView: View {
         }
         .onReceive(viewModel.$pokemonItemDetail) { detail in
             pokemonItemDetail = detail
+            if favoriteViewModel.isFavorite(name: pokemonItemDetail.name) {
+                isFavorite.toggle()
+            }
 //            showLoadder.toggle()
             if pokemonItemDetail.id != 0 {
                 showingAlertPopup.toggle()

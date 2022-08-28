@@ -23,6 +23,10 @@
 		A4098AA428BAA55000B29850 /* PokemonAbility.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4098AA328BAA55000B29850 /* PokemonAbility.swift */; };
 		A4098AA628BAD2AD00B29850 /* ConnectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4098AA528BAD2AD00B29850 /* ConnectionManager.swift */; };
 		A4098AAA28BAFC5A00B29850 /* favorite.json in Resources */ = {isa = PBXBuildFile; fileRef = A4098AA928BAFC5A00B29850 /* favorite.json */; };
+		A4098AAD28BBAE4E00B29850 /* FavoriteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4098AAC28BBAE4E00B29850 /* FavoriteView.swift */; };
+		A4098AAF28BBB17300B29850 /* FavoriteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4098AAE28BBB17300B29850 /* FavoriteViewModel.swift */; };
+		A4098AB128BBB1A500B29850 /* FavoriteDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4098AB028BBB1A500B29850 /* FavoriteDataSource.swift */; };
+		A4098AB328BBBFAB00B29850 /* PokemonDetailDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4098AB228BBBFAB00B29850 /* PokemonDetailDataSource.swift */; };
 		A43A8AC528B6C99B00CCCAFC /* PokemonWikiApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A43A8AC428B6C99B00CCCAFC /* PokemonWikiApp.swift */; };
 		A43A8AC728B6C99B00CCCAFC /* PokemonListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A43A8AC628B6C99B00CCCAFC /* PokemonListView.swift */; };
 		A43A8AC928B6C99D00CCCAFC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A43A8AC828B6C99D00CCCAFC /* Assets.xcassets */; };
@@ -58,6 +62,10 @@
 		A4098AA328BAA55000B29850 /* PokemonAbility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonAbility.swift; sourceTree = "<group>"; };
 		A4098AA528BAD2AD00B29850 /* ConnectionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionManager.swift; sourceTree = "<group>"; };
 		A4098AA928BAFC5A00B29850 /* favorite.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = favorite.json; sourceTree = "<group>"; };
+		A4098AAC28BBAE4E00B29850 /* FavoriteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteView.swift; sourceTree = "<group>"; };
+		A4098AAE28BBB17300B29850 /* FavoriteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteViewModel.swift; sourceTree = "<group>"; };
+		A4098AB028BBB1A500B29850 /* FavoriteDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteDataSource.swift; sourceTree = "<group>"; };
+		A4098AB228BBBFAB00B29850 /* PokemonDetailDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonDetailDataSource.swift; sourceTree = "<group>"; };
 		A43A8AC128B6C99B00CCCAFC /* PokemonWiki.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PokemonWiki.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A43A8AC428B6C99B00CCCAFC /* PokemonWikiApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonWikiApp.swift; sourceTree = "<group>"; };
 		A43A8AC628B6C99B00CCCAFC /* PokemonListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonListView.swift; sourceTree = "<group>"; };
@@ -106,6 +114,15 @@
 			path = PokemonDetail;
 			sourceTree = "<group>";
 		};
+		A4098AAB28BBAE3700B29850 /* Favorites */ = {
+			isa = PBXGroup;
+			children = (
+				A4098AAC28BBAE4E00B29850 /* FavoriteView.swift */,
+				A4098AAE28BBB17300B29850 /* FavoriteViewModel.swift */,
+			);
+			path = Favorites;
+			sourceTree = "<group>";
+		};
 		A43A8AB828B6C99B00CCCAFC = {
 			isa = PBXGroup;
 			children = (
@@ -129,6 +146,7 @@
 				A43A8AE728B6E60900CCCAFC /* SplashScreenView.swift */,
 				A43A8AFA28B7A5A600CCCAFC /* PokemonList */,
 				A4098A7728B8235D00B29850 /* PokemonDetail */,
+				A4098AAB28BBAE3700B29850 /* Favorites */,
 				A43A8B0828B7FF5800CCCAFC /* DataSource */,
 				A43A8AFE28B7BAE500CCCAFC /* Domain */,
 				A43A8AF028B707C100CCCAFC /* Manager */,
@@ -252,6 +270,8 @@
 			isa = PBXGroup;
 			children = (
 				A4098A6E28B8001800B29850 /* PokemonListDataSource.swift */,
+				A4098AB228BBBFAB00B29850 /* PokemonDetailDataSource.swift */,
+				A4098AB028BBB1A500B29850 /* FavoriteDataSource.swift */,
 			);
 			path = DataSource;
 			sourceTree = "<group>";
@@ -340,6 +360,7 @@
 				A4098A8128B9243A00B29850 /* CarrouselItemView.swift in Sources */,
 				A43A8AF228B707D200CCCAFC /* NetworkManager.swift in Sources */,
 				A4098A8F28B9B96D00B29850 /* FontsManager.swift in Sources */,
+				A4098AAD28BBAE4E00B29850 /* FavoriteView.swift in Sources */,
 				A4098A7228B8132100B29850 /* UIColor.swift in Sources */,
 				A43A8AF728B709C100CCCAFC /* PokemonList.swift in Sources */,
 				A4098A9D28BA7B8100B29850 /* CacheManager.swift in Sources */,
@@ -347,7 +368,9 @@
 				A43A8B0128B7BB7B00CCCAFC /* PokemonItem.swift in Sources */,
 				A43A8AF428B7092400CCCAFC /* PokemonDetail.swift in Sources */,
 				A4098AA428BAA55000B29850 /* PokemonAbility.swift in Sources */,
+				A4098AB328BBBFAB00B29850 /* PokemonDetailDataSource.swift in Sources */,
 				A43A8AC528B6C99B00CCCAFC /* PokemonWikiApp.swift in Sources */,
+				A4098AAF28BBB17300B29850 /* FavoriteViewModel.swift in Sources */,
 				A43A8ADF28B6D5F500CCCAFC /* LottieView.swift in Sources */,
 				A43A8AF928B79BEC00CCCAFC /* Tools.swift in Sources */,
 				A4098AA628BAD2AD00B29850 /* ConnectionManager.swift in Sources */,
@@ -357,6 +380,7 @@
 				A43A8B0728B7D24800CCCAFC /* DataMapper.swift in Sources */,
 				A4098A6F28B8001800B29850 /* PokemonListDataSource.swift in Sources */,
 				A4098A8328B969E500B29850 /* DetailCellView.swift in Sources */,
+				A4098AB128BBB1A500B29850 /* FavoriteDataSource.swift in Sources */,
 				A43A8B0528B7D23000CCCAFC /* ListCellView.swift in Sources */,
 				A4098A7D28B824C100B29850 /* PokemonItemDetail.swift in Sources */,
 				A4098AA228BA9F7500B29850 /* PokemonAbilityDetail.swift in Sources */,
