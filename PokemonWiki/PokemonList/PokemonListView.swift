@@ -62,7 +62,6 @@ struct PokemonListView: View {
                                     .frame(width: 50, height: 50, alignment: .center)
                             }
                             .frame(height: 75)
-                            Divider().frame(maxHeight: 20)
                             Rectangle()
                                 .frame(maxWidth: 30, maxHeight: 10)
                                 .foregroundColor(.clear)
