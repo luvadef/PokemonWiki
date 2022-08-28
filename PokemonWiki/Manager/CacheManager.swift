@@ -11,6 +11,7 @@ class CacheManager {
     enum Keys {
         static let pokemonItemList = "pokemon_item_list"
         static let pokemonItemDetail = "pokemon_item_detail"
+        static let pokemonAbility = "pokemon_ability"
     }
 
     private let defaults = UserDefaults.standard
@@ -43,6 +44,20 @@ class CacheManager {
         }
     }
 
+    func savePokemonAbility(ability: PokemonAbility) -> Bool {
+        let encoder = JSONEncoder()
+        if let encoded = try? encoder.encode(ability) {
+            defaults.set(encoded, forKey: Keys.pokemonAbility)
+            if defaults.synchronize() {
+                return true
+            } else {
+                return false
+            }
+        } else {
+            return false
+        }
+    }
+
     func getPokemonItemList(onCompletion: @escaping ([PokemonItem]?) -> Void) {
         if let savedPokemonItemList = defaults.object(forKey: Keys.pokemonItemList) as? Data {
             let decoder = JSONDecoder()
@@ -57,6 +72,15 @@ class CacheManager {
             let decoder = JSONDecoder()
             if let loadedPokemonItemDetail = try? decoder.decode(PokemonItemDetail.self, from: savedPokemonItemDetail) {
                 onCompletion(loadedPokemonItemDetail)
+            }
+        }
+    }
+
+    func getPokemonAbility(onCompletion: @escaping (PokemonAbilityDetail?) -> Void) {
+        if let savedPokemonAbility = defaults.object(forKey: Keys.pokemonAbility) as? Data {
+            let decoder = JSONDecoder()
+            if let loadedPokemonAbility = try? decoder.decode(PokemonAbilityDetail.self, from: savedPokemonAbility) {
+                onCompletion(loadedPokemonAbility)
             }
         }
     }

@@ -32,6 +32,7 @@ class PokemonListViewModel {
                 return
             }
             self.pokemonItemDetail = pokemon
+            print(self.pokemonItemDetail)
         })
     }
 }

@@ -28,7 +28,7 @@ struct DataMapper {
         }
     }
 
-    func dataFetchToDomain (
+    func dataFetchToDomain(
         _ value: PokemonDetail
     ) -> PokemonItemDetail {
         return PokemonItemDetail(
@@ -50,6 +50,22 @@ struct DataMapper {
             stats: value.stats,
             types: value.types,
             weight: value.weight
+        )
+    }
+
+    func dataAbilityToDomain(
+        _ value: PokemonAbility
+    ) -> PokemonAbilityDetail {
+        return PokemonAbilityDetail(
+            effectChanges: value.effectChanges,
+            effectEntries: value.effectEntries,
+            flavorTextEntries: value.flavorTextEntries,
+            generation: value.generation,
+            id: value.id,
+            isMainSeries: value.isMainSeries,
+            name: value.name,
+            names: value.names,
+            pokemon: value.pokemon
         )
     }
 
