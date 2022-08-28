@@ -13,8 +13,12 @@ struct PokemonDetailView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.presentationMode) private var presentationMode
     @State private var pokemonItemDetail: PokemonItemDetail = PokemonItemDetail.getEmptyPokemon()
+    @State private var pokemonAbilityDetail: PokemonAbilityDetail = PokemonAbilityDetail.getEmptyAbilityDetail()
     @State private var isFavorite = false
-    @State var showingPopup = false
+    @State var showingAlertPopup = false
+    @State var showingAbilityPopup = false
+    @State private var showLoadder = false
+    @State private var showFavorite = false
 
     var carousel: some View {
         ScrollView(.horizontal, showsIndicators: false) {
@@ -79,12 +83,30 @@ struct PokemonDetailView: View {
         .padding(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))
         .background(.white)
         .cornerRadius(10)
+        .shadow(radius: 5)
     }
 
     var abilities: some View {
         VStack {
             ForEach(0 ..< pokemonItemDetail.getAbilities().count, id: \.self) { index in
-                PokemonText(text: pokemonItemDetail.getAbilities()[index], size: 12).pokemonText
+                HStack {
+                    Spacer()
+                    PokemonText(text: pokemonItemDetail.getAbilities()[index], size: 12).pokemonText
+                    Spacer()
+                    Image("Arrow")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 25, height: 25)
+                }
+                .onTapGesture {
+                    DispatchQueue.main.async {
+                        viewModel.getAbility(pokemonItemDetail.abilities[index].ability.url)
+                        showingAbilityPopup.toggle()
+                      }
+                }
+                .onReceive(viewModel.$pokemonAbilityDetail) { ability in
+                        pokemonAbilityDetail = ability
+                }
                 if index < pokemonItemDetail.getAbilities().count - 1 {
                     Divider()
                 }
@@ -94,60 +116,136 @@ struct PokemonDetailView: View {
         .padding(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))
         .background(.white)
         .cornerRadius(10)
+        .shadow(radius: 5)
     }
 
     var stats: some View {
-        List {//(pokemonItemDetail.stats, children: \.items) { row in
-
+        VStack {
+            ForEach(0 ..< pokemonItemDetail.stats.count, id: \.self) { index in
+                HStack {
+                    PokemonText(
+                        text: "\(pokemonItemDetail.stats[index].stat.name): \(String(pokemonItemDetail.stats[index].baseStat))",
+                        size: 12
+                    ).pokemonText
+                }
+                if index < pokemonItemDetail.stats.count - 1 {
+                    Divider()
+                }
+            }
         }
+        .frame(maxWidth: .infinity)
+        .padding(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))
+        .background(.white)
+        .cornerRadius(10)
+        .shadow(radius: 5)
     }
 
     var body: some View {
         ZStack {
             ScrollView(.vertical) {
+                Rectangle()
+                    .frame(minHeight: 20)
+                    .foregroundColor(.clear)
                 PokemonText(text: "Images", size: 18).pokemonText
                 carousel
+                Toggle("Favorite", isOn: $isFavorite)
+                    .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10))
+                    .onTapGesture {
+                        if !isFavorite {
+                            showFavorite.toggle()
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+                                withAnimation {
+                                    showFavorite.toggle()
+                                }
+                            })
+                        }
+                    }
                 VStack {
-                    //Toggle("Favorite", isOn: $isFavorite)
                     Rectangle()
-                        .frame(minHeight: 20)
+                        .frame(minHeight: 10)
                         .foregroundColor(.clear)
                     PokemonText(text: "Details", size: 18).pokemonText
                     detail
                     Rectangle()
                         .frame(minHeight: 20)
                         .foregroundColor(.clear)
+                    PokemonText(text: "Stats", size: 18).pokemonText
+                    stats
+                    Rectangle()
+                        .frame(minHeight: 20)
+                        .foregroundColor(.clear)
                     PokemonText(text: "Abilities", size: 18).pokemonText
                     abilities
-//                    Button("Go back") {
-//                        handleDismiss()
-//                    }
-//                        .buttonStyle(.borderedProminent)
-//                        .controlSize(.large)
-//                        .frame(alignment: .bottom)
-//                        .font(Font.custom(FontsManager.PokemonGB.regular, size: 18))
+                    Rectangle()
+                        .frame(minHeight: 20)
+                        .foregroundColor(.clear)
                 }
                 .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10))
 
             }
             .frame(maxHeight: .infinity)
 
-            if showingPopup {
-                VStack {
-                    PokemonText(
-                        text: "No se ha encontrado información del Pokémon",
-                        size: 14
-                    )
+            if showingAlertPopup {
+                ZStack {
+                    VStack {
+                        Text("Sorry!")
+                            .foregroundColor(.black)
+                            .font(Font.custom(FontsManager.PokemonGB.regular, size: 18))
+                            .padding()
+                        Divider()
+                        PokemonText(
+                            text: "We couldn't load the information of this pokemon",
+                            size: 14
+                        )
                         .pokemonText
+                        Divider()
+                        Button("Back") {
+                            handleDismiss()
+                        }
+                        .font(Font.custom(FontsManager.PokemonGB.regular, size: 18))
+                        .padding()
+                    }
+                    .frame(width: 300, height: 200, alignment: .center)
+                    .background(Color.white)
+                    .cornerRadius(10)
+                    .shadow(radius: 10)
+                }
+                .padding()
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(.brown)
+            }
+            if showingAbilityPopup {
+                VStack {
+                    PokemonText(text: pokemonAbilityDetail.name, size: 18)
+                    .pokemonText
+                    Divider()
+                    if pokemonAbilityDetail.effectEntries.count > 0 {
+                        ForEach(0 ..< pokemonAbilityDetail.effectEntries.count, id: \.self) { index in
+                            if pokemonAbilityDetail.effectEntries[index].language.name == "en" {
+                                Text(pokemonAbilityDetail.effectEntries[index].shortEffect)
+                                    .font(Font.custom(FontsManager.PokemonGB.regular, size: 12))
+                                    .padding()
+                            }
+                        }
+                    }
+                    Divider()
                     Button("Back") {
-                        handleDismiss()
+                        showingAbilityPopup.toggle()
                     }
                     .font(Font.custom(FontsManager.PokemonGB.regular, size: 18))
                 }
-                .frame(width: 300, height: 200, alignment: .center)
+                .frame(width: 300, height: 250, alignment: .center)
                 .background(Color.white)
                 .cornerRadius(10)
                 .shadow(radius: 10)
+            }
+            if showLoadder {
+                LottieView(fileName: "pokeball")
+                    .frame(width: 200, height: 200, alignment: .center)
+            }
+            if showFavorite {
+                LottieView(fileName: "favorite")
+                    .frame(width: 200, height: 200, alignment: .center)
             }
         }
         .onAppear() {
@@ -155,8 +253,9 @@ struct PokemonDetailView: View {
         }
         .onReceive(viewModel.$pokemonItemDetail) { detail in
             pokemonItemDetail = detail
-            if pokemonItemDetail.id == 0 {
-                showingPopup = true
+//            showLoadder.toggle()
+            if pokemonItemDetail.id != 0 {
+                showingAlertPopup.toggle()
             }
         }
         .background(UIColor(named: "SkyBlue")?.toColor().edgesIgnoringSafeArea(.top))
@@ -185,6 +284,34 @@ struct PokemonText {
             .foregroundColor(color)
             .frame(minHeight: size)
             .background(.clear)
+    }
+}
+
+struct AbilityPopUP {
+    var title: String
+    var text: String
+    var pokePopup: some View {
+        VStack {
+            Text(title)
+                .font(Font.custom(FontsManager.PokemonGB.regular, size: 18))
+                .foregroundColor(.black)
+                .frame(minHeight: 50)
+                .background(.clear)
+            Divider()
+            Text(text)
+                .font(Font.custom(FontsManager.PokemonGB.regular, size: 12))
+                .foregroundColor(.black)
+                .frame(minHeight: 50)
+                .background(.clear)
+            Button("OK") {
+
+            }
+            .font(Font.custom(FontsManager.PokemonGB.regular, size: 18))
+        }
+        .frame(width: 300, height: 200, alignment: .center)
+        .background(Color.white)
+        .cornerRadius(10)
+        .shadow(radius: 10)
     }
 }
 

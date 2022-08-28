@@ -12,6 +12,7 @@ import SwiftUI
 class PokemonDetailViewModel {
     var dataSource = PokemonListDataSource()
     @Published var pokemonItemDetail: PokemonItemDetail = PokemonItemDetail.getEmptyPokemon()
+    @Published var pokemonAbilityDetail: PokemonAbilityDetail = PokemonAbilityDetail.getEmptyAbilityDetail()
     @Published var showNetworkError: Bool = false
     
     func getPokemon(_ name: String) {
@@ -26,6 +27,22 @@ class PokemonDetailViewModel {
                 return
             }
             self.pokemonItemDetail = pokemon
+        })
+    }
+
+    func getAbility(_ url: String) {
+        dataSource.callAbilityPokemon(url: url, onCompletion: { (ability, error) in
+            guard let ability = ability else {
+                guard let error = error else {
+                    return
+                }
+                if error == NetworkError.apiError {
+                    self.showNetworkError = true
+                }
+                return
+            }
+            //print(self.pokemonAbilityDetail)
+            self.pokemonAbilityDetail = ability
         })
     }
 }

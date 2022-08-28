@@ -66,6 +66,16 @@ struct NetworkManager {
         }
         executeRequest(request: request, completion: completion)
     }
+
+    typealias AbilityCompletionClosure = ((PokemonAbility?, Error?) -> Void)
+
+    public func abilityPokemon(url: String, completion: AbilityCompletionClosure?) {
+        guard let request = createRequest(for: url) else {
+            completion?(nil, NetworkError.invalidUrl)
+            return
+        }
+        executeRequest(request: request, completion: completion)
+    }
 }
 
 extension HTTPURLResponse {
