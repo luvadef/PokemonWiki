@@ -175,23 +175,23 @@ struct PokemonDetailView: View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack {
                 ForEach(DataMapper.getSpritesArray(sprites: pokemonItemDetail.sprites), id: \.self) { sprite in
-                        VStack {
-                            AsyncImage(url: URL(string: sprite.url))
-                                .scaledToFill()
-                                .clipped()
-                            PokemonText(
-                                text: sprite.type,
-                                size: 12,
-                                color: .black
-                            )
-                                .pokemonText
-                                .frame(maxWidth: .infinity)
-                                .padding(EdgeInsets(top: 0, leading: 10, bottom: 10, trailing: 10))
-                        }
-                        .background(Color.white)
-                        .cornerRadius(10)
-                        .shadow(radius: 5)
-                        .padding(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))
+                    VStack {
+                        AsyncImage(url: URL(string: sprite.url))
+                            .scaledToFill()
+                            .clipped()
+                        PokemonText(
+                            text: sprite.type,
+                            size: 12,
+                            color: .black
+                        )
+                        .pokemonText
+                        .frame(maxWidth: .infinity)
+                        .padding(EdgeInsets(top: 0, leading: 10, bottom: 10, trailing: 10))
+                    }
+                    .background(Color.white)
+                    .cornerRadius(10)
+                    .shadow(radius: 5)
+                    .padding(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))
                 }
             }
         }
