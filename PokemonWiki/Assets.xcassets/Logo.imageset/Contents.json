@@ -1,8 +1,19 @@
 {
   "images" : [
     {
-      "filename" : "International_Pokémon_logo.svg.png",
-      "idiom" : "universal"
+      "filename" : "pokemonlogo.png",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "filename" : "pokemonlogo@2x.png",
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "filename" : "pokemonlogo@3x.png",
+      "idiom" : "universal",
+      "scale" : "3x"
     }
   ],
   "info" : {

@@ -19,30 +19,179 @@ struct PokemonDetailView: View {
     @State private var isFavorite = false
     @State var showingAlertPopup = false
     @State var showingAbilityPopup = false
-    @State private var showLoadder = false
-    @State private var showFavorite = false
+    @State private var showLoadderLottie = false
+    @State private var showFavoriteLottie = false
+
+    var body: some View {
+        GeometryReader { geometry in
+            ZStack {
+                VStack(spacing: 0) {
+                    ScrollView(.vertical) {
+                        Rectangle()
+                            .frame(minHeight: 20)
+                            .foregroundColor(.clear)
+                        PokemonText(text: "Images", size: 18).pokemonText
+                        carousel
+                        Toggle("Favorite", isOn: $isFavorite)
+                            .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10))
+                            .onTapGesture {
+                                favoriteViewModel.setFavorite(
+                                    name: pokemonItemDetail.name,
+                                    number: pokemonName,
+                                    url: pokemonURL
+                                )
+                                if !isFavorite {
+                                    showFavoriteLottie.toggle()
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+                                        withAnimation {
+                                            showFavoriteLottie.toggle()
+                                        }
+                                    })
+                                }
+                            }
+                        VStack {
+                            Rectangle()
+                                .frame(minHeight: 10)
+                                .foregroundColor(.clear)
+                            PokemonText(text: "Details", size: 18).pokemonText
+                            detail
+                            Rectangle()
+                                .frame(minHeight: 20)
+                                .foregroundColor(.clear)
+                            PokemonText(text: "Stats", size: 18).pokemonText
+                            stats
+                            Rectangle()
+                                .frame(minHeight: 20)
+                                .foregroundColor(.clear)
+                            PokemonText(text: "Abilities", size: 18).pokemonText
+                            abilities
+                            Rectangle()
+                                .frame(minHeight: 20)
+                                .foregroundColor(.clear)
+                        }
+                        .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10))
+
+                    }
+                    .frame(maxHeight: .infinity)
+                    .padding(.bottom, geometry.safeAreaInsets.bottom)
+                }
+                .edgesIgnoringSafeArea(.bottom)
+
+                if showingAlertPopup {
+                    ZStack {
+                        VStack {
+                            Text("Sorry!")
+                                .foregroundColor(.black)
+                                .font(Font.custom(FontsManager.PokemonGB.regular, size: 18))
+                                .padding()
+                            Divider()
+                            PokemonText(
+                                text: "We couldn't load the information of this pokemon",
+                                size: 14
+                            )
+                            .pokemonText
+                            Divider()
+                            Button("Back") {
+                                handleDismiss()
+                            }
+                            .font(Font.custom(FontsManager.PokemonGB.regular, size: 18))
+                            .padding()
+                        }
+                        .frame(width: 300, height: 200, alignment: .center)
+                        .background(Color.white)
+                        .cornerRadius(10)
+                        .shadow(radius: 10)
+                    }
+                    .padding()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(.brown)
+                }
+                if showingAbilityPopup {
+                    VStack {
+                        PokemonText(text: pokemonAbilityDetail.name, size: 18)
+                        .pokemonText
+                        Divider()
+                        if pokemonAbilityDetail.effectEntries.count > 0 {
+                            ForEach(0 ..< pokemonAbilityDetail.effectEntries.count, id: \.self) { index in
+                                if pokemonAbilityDetail.effectEntries[index].language.name == "en" {
+                                    Text(pokemonAbilityDetail.effectEntries[index].shortEffect)
+                                        .font(Font.custom(FontsManager.PokemonGB.regular, size: 12))
+                                        .padding()
+                                }
+                            }
+                        }
+                        Divider()
+                        Button("Back") {
+                            showingAbilityPopup.toggle()
+                        }
+                        .font(Font.custom(FontsManager.PokemonGB.regular, size: 18))
+                    }
+                    .frame(width: 300, height: 250, alignment: .center)
+                    .background(Color.white)
+                    .cornerRadius(10)
+                    .shadow(radius: 10)
+                }
+                if showLoadderLottie {
+                    LottieView(fileName: "pokeball")
+                        .frame(width: 200, height: 200, alignment: .center)
+                }
+                if showFavoriteLottie {
+                    LottieView(fileName: "favorite")
+                        .frame(width: 200, height: 200, alignment: .center)
+                }
+            }
+            .toolbar {
+                Button(action: {
+                    let image = self.takeScreenshot(origin: geometry.frame(in: .global).origin, size: geometry.size)
+                    sharePokemon(image: image)
+                }) {
+                   Image(systemName: "square.and.arrow.up")
+                       .resizable()
+                       .aspectRatio(contentMode: .fit)
+                       .foregroundColor(.black)
+                       .frame(width: 30, height: 30)
+               }
+            }
+            .onAppear() {
+                viewModel.getPokemon(pokemonName)
+            }
+            .onReceive(viewModel.$pokemonItemDetail) { detail in
+                pokemonItemDetail = detail
+                if favoriteViewModel.isFavorite(name: pokemonItemDetail.name) {
+                    isFavorite.toggle()
+                }
+    //            showLoadder.toggle()
+                if pokemonItemDetail.id != 0 {
+                    showingAlertPopup.toggle()
+                }
+            }
+            .background(UIColor(named: "SkyBlue")?.toColor().edgesIgnoringSafeArea(.top))
+            .background(UIColor(named: "SkyBlue")?.toColor().edgesIgnoringSafeArea(.bottom))
+            .navigationTitle(pokemonItemDetail.name.uppercased())
+        }
+    }
 
     var carousel: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack {
                 ForEach(DataMapper.getSpritesArray(sprites: pokemonItemDetail.sprites), id: \.self) { sprite in
-                        VStack {
-                            AsyncImage(url: URL(string: sprite.url))
-                                .scaledToFill()
-                                .clipped()
-                            PokemonText(
-                                text: sprite.type,
-                                size: 12,
-                                color: .black
-                            )
-                                .pokemonText
-                                .frame(maxWidth: .infinity)
-                                .padding(EdgeInsets(top: 0, leading: 10, bottom: 10, trailing: 10))
-                        }
-                        .background(Color.white)
-                        .cornerRadius(10)
-                        .shadow(radius: 5)
-                        .padding(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))
+                    VStack {
+                        AsyncImage(url: URL(string: sprite.url))
+                            .scaledToFill()
+                            .clipped()
+                        PokemonText(
+                            text: sprite.type,
+                            size: 12,
+                            color: .black
+                        )
+                        .pokemonText
+                        .frame(maxWidth: .infinity)
+                        .padding(EdgeInsets(top: 0, leading: 10, bottom: 10, trailing: 10))
+                    }
+                    .background(Color.white)
+                    .cornerRadius(10)
+                    .shadow(radius: 5)
+                    .padding(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))
                 }
             }
         }
@@ -142,137 +291,38 @@ struct PokemonDetailView: View {
         .shadow(radius: 5)
     }
 
-    var body: some View {
-        ZStack {
-            ScrollView(.vertical) {
-                Rectangle()
-                    .frame(minHeight: 20)
-                    .foregroundColor(.clear)
-                PokemonText(text: "Images", size: 18).pokemonText
-                carousel
-                Toggle("Favorite", isOn: $isFavorite)
-                    .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10))
-                    .onTapGesture {
-                        favoriteViewModel.setFavorite(
-                            name: pokemonItemDetail.name,
-                            number: pokemonName,
-                            url: pokemonURL
-                        )
-                        if !isFavorite {
-                            showFavorite.toggle()
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
-                                withAnimation {
-                                    showFavorite.toggle()
-                                }
-                            })
-                        }
-                    }
-                VStack {
-                    Rectangle()
-                        .frame(minHeight: 10)
-                        .foregroundColor(.clear)
-                    PokemonText(text: "Details", size: 18).pokemonText
-                    detail
-                    Rectangle()
-                        .frame(minHeight: 20)
-                        .foregroundColor(.clear)
-                    PokemonText(text: "Stats", size: 18).pokemonText
-                    stats
-                    Rectangle()
-                        .frame(minHeight: 20)
-                        .foregroundColor(.clear)
-                    PokemonText(text: "Abilities", size: 18).pokemonText
-                    abilities
-                    Rectangle()
-                        .frame(minHeight: 20)
-                        .foregroundColor(.clear)
-                }
-                .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10))
-
-            }
-            .frame(maxHeight: .infinity)
-
-            if showingAlertPopup {
-                ZStack {
-                    VStack {
-                        Text("Sorry!")
-                            .foregroundColor(.black)
-                            .font(Font.custom(FontsManager.PokemonGB.regular, size: 18))
-                            .padding()
-                        Divider()
-                        PokemonText(
-                            text: "We couldn't load the information of this pokemon",
-                            size: 14
-                        )
-                        .pokemonText
-                        Divider()
-                        Button("Back") {
-                            handleDismiss()
-                        }
-                        .font(Font.custom(FontsManager.PokemonGB.regular, size: 18))
-                        .padding()
-                    }
-                    .frame(width: 300, height: 200, alignment: .center)
-                    .background(Color.white)
-                    .cornerRadius(10)
-                    .shadow(radius: 10)
-                }
-                .padding()
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(.brown)
-            }
-            if showingAbilityPopup {
-                VStack {
-                    PokemonText(text: pokemonAbilityDetail.name, size: 18)
-                    .pokemonText
-                    Divider()
-                    if pokemonAbilityDetail.effectEntries.count > 0 {
-                        ForEach(0 ..< pokemonAbilityDetail.effectEntries.count, id: \.self) { index in
-                            if pokemonAbilityDetail.effectEntries[index].language.name == "en" {
-                                Text(pokemonAbilityDetail.effectEntries[index].shortEffect)
-                                    .font(Font.custom(FontsManager.PokemonGB.regular, size: 12))
-                                    .padding()
-                            }
-                        }
-                    }
-                    Divider()
-                    Button("Back") {
-                        showingAbilityPopup.toggle()
-                    }
-                    .font(Font.custom(FontsManager.PokemonGB.regular, size: 18))
-                }
-                .frame(width: 300, height: 250, alignment: .center)
-                .background(Color.white)
-                .cornerRadius(10)
-                .shadow(radius: 10)
-            }
-            if showLoadder {
-                LottieView(fileName: "pokeball")
-                    .frame(width: 200, height: 200, alignment: .center)
-            }
-            if showFavorite {
-                LottieView(fileName: "favorite")
-                    .frame(width: 200, height: 200, alignment: .center)
-            }
-        }
-        .onAppear() {
-            viewModel.getPokemon(pokemonName)
-        }
-        .onReceive(viewModel.$pokemonItemDetail) { detail in
-            pokemonItemDetail = detail
-            if favoriteViewModel.isFavorite(name: pokemonItemDetail.name) {
-                isFavorite.toggle()
-            }
-//            showLoadder.toggle()
-            if pokemonItemDetail.id != 0 {
-                showingAlertPopup.toggle()
-            }
-        }
-        .background(UIColor(named: "SkyBlue")?.toColor().edgesIgnoringSafeArea(.top))
-        .background(UIColor(named: "SkyBlue")?.toColor().edgesIgnoringSafeArea(.bottom))
-        .navigationTitle(pokemonItemDetail.name.uppercased())
+    func sharePokemon(image: UIImage) {
+        let av = UIActivityViewController(activityItems: [image], applicationActivities: nil)
+        av.popoverPresentationController?.sourceView = HostingView(rootView: self)
+        UIApplication.shared.windows.first?.rootViewController?.present(av, animated: true, completion: nil)
     }
 }
+
+class HostingView<T: View>: UIView {
+        private(set) var hostingController: UIHostingController<T>
+
+        var rootView: T {
+            get { hostingController.rootView }
+            set { hostingController.rootView = newValue }
+        }
+
+        init(rootView: T, frame: CGRect = .zero) {
+            hostingController = UIHostingController(rootView: rootView)
+
+            super.init(frame: frame)
+
+            backgroundColor = .clear
+            hostingController.view.backgroundColor = backgroundColor
+            hostingController.view.frame = self.bounds
+            hostingController.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+
+            addSubview(hostingController.view)
+        }
+
+        required init?(coder: NSCoder) {
+            fatalError("init(coder:) has not been implemented")
+        }
+    }
 
 private extension PokemonDetailView {
     func handleDismiss() {
